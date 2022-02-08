@@ -7,7 +7,15 @@ from tensorflow.keras import regularizers
 
 
 def call_splat_conv2d(input, kernel):
-    placeholder = np.zeros(shape=input.shape[0])
+    print(input)
+    print(input.shape)
+    print(input[0])
+    print(input[0][2])
+    print(input[0,1])
+    print(input[0][0,1])
+    print(input[0][0])
+    placeholder = np.zeros(shape=input[0].shape)
+    print(placeholder)
     for image in input[0]:
         for ind in image.shape:
             placeholder[ind] = splat_conv2d(channel, kernel)
@@ -51,50 +59,17 @@ def splat_conv2d(input, kernel):
 
 
 class splatter(tf.keras.layers.Conv2D):
-    def __init__(self,
-               filters,
-               kernel_size,
-               strides=(1, 1),
-               padding='valid',
-               data_format=None,
-               dilation_rate=(1, 1),
-               groups=1,
-               activation=None,
-               use_bias=True,
-               kernel_initializer='glorot_uniform',
-               bias_initializer='zeros',
-               kernel_regularizer=None,
-               bias_regularizer=None,
-               activity_regularizer=None,
-               kernel_constraint=None,
-               bias_constraint=None,
-               **kwargs):
-        super(splatter, self).__init__(
-            # rank=2,
-            filters=filters,
-            kernel_size=kernel_size,
-            strides=strides,
-            padding=padding,
-            data_format=data_format,
-            dilation_rate=dilation_rate,
-            groups=groups,
-            activation=activations.get(activation),
-            use_bias=use_bias,
-            kernel_initializer=initializers.get(kernel_initializer),
-            bias_initializer=initializers.get(bias_initializer),
-            kernel_regularizer=regularizers.get(kernel_regularizer),
-            bias_regularizer=regularizers.get(bias_regularizer),
-            activity_regularizer=regularizers.get(activity_regularizer),
-            kernel_constraint=constraints.get(kernel_constraint),
-            bias_constraint=constraints.get(bias_constraint),
-            **kwargs
-        )
-        
-    
-    # def build(self, input_shape):
-        
-    def call(self, input):
-        return call_splat_conv2d(input, self.kernel)
+    def convolution_op(self, inputs, kernel):
+        print("hello")
+        return call_splat_conv2d(inputs, kernel)
+        # mean, var = tf.nn.moments(kernel, axes=[0, 1, 2], keepdims=True)
+        # return tf.nn.conv2d(
+        #     inputs,
+        #     (kernel - mean) / tf.sqrt(var + 1e-10),
+        #     padding="VALID",
+        #     strides=list(self.strides),
+        #     name=self.__class__.__name__,
+        #     )
 
 
 # layer = splatter(10 ,3, input_shape=(28,28,3,9))
